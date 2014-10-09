@@ -1,0 +1,3 @@
+This is the jQuery UI Explode Effect. 
+
+Explodes an element in all directions into n pieeces. Implodes an element to its original wholeness. 
