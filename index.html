@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="media/jquery-ui-1.11.1/jquery-ui.min.css">
     <script type="text/javascript">
 		$(document).ready(function(){
-		
+            $('#tabs').tabs();
 		});
         function getTabs(orgId){
 		$.ajax({
@@ -23,7 +23,7 @@
 				$('Tab',data).each(function(){
 					x+='<li value="'+$(this).text()+'">'+$(this).text()+'</li>';
 				});
-				$('#dump').html(x+'</ul>');
+				$('#tabs').html(x+'</ul>');
 				getGeneral(orgId);
 				
 			 },
@@ -41,6 +41,10 @@
 
   <body>
     <h1>Medical Services</h1>
+    <form>
+        <input type="text" id='orgId'/>
+        <input type="button" value="Find data" onclick="getTabs($('#orgId').val())"/>
+    </form>  
     <div id="tabs"></div>
   </body>
 </html>
