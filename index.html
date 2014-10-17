@@ -42,8 +42,16 @@
   <body>
     <h1>Medical Services</h1>
     <form>
-        <input type="text" id='orgId'/>
-        <input type="button" value="Find data" onclick="getTabs($('#orgId').val())"/>
+        <fieldset>
+            <legend>Search By:</legend>
+            Organization Type:
+            Organization Name:
+            State:
+            County:
+            Zip Code:
+        </fieldset>
+<!--        <input type="text" id='orgId'/>-->
+<!--        <input type="button" value="Find data" onclick="getTabs($('#orgId').val())"/>-->
     </form>  
     <div id="tabs"></div>
   </body>
