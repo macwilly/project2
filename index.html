@@ -7,7 +7,12 @@
 <script src="media/jquery-ui-1.11.1/jquery-ui.min.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" href="media/jquery-ui-1.11.1/jquery-ui.min.css">
 <script type="text/javascript">
+        //////////////////////////--making the dialog box--/////////////////////////////////    
+ $(function() {
+    $( "#dialogBox" ).dialog();
+  });
 
+    
 	function getTabs(orgId){
 		//http://simon.ist.rit.edu:8080/Services/resources/ESD/Application/Tabs?orgId=1002
 		$.ajax({
@@ -17,14 +22,15 @@
 			data:{path:'/Application/Tabs?orgId='+orgId},
 			success: function(data){
                 //making a outter box 
-                var box = '<div id="box">';
+                var box = '<div id="dialogBox">';
                 
                 //if there are errors do not do anything 
                 if($(data).find('error').length!=0){
                     
+                    
                 }else{
                     //this will be that div that has that main tabs(following the pattern from jQuery UI)
-                    var tabs= '<div id="tabs" class="ui-tabs"><ul class="ui-tabs-nav">;
+                    var tabs= '<div id="tabs" class="ui-tabs"><ul class="ui-tabs-nav">';
                     
                     var innerDiv = '';
                     // get the information for that tabs 
@@ -36,7 +42,9 @@
 					});
                     
                     box +=tabs + '</ul>' + innerDiv + '</div></div>';
-                    
+                    $('#dump').html(box);
+                   // $("#dialogBox").dialog( "open" );
+
                 }//end of else 
                 
 				//<data><row><Tab>General</Tab></row><row><Tab>Locations</Tab></row><row><Tab>Treatment</Tab></row><row><Tab>Training</Tab></row><row><Tab>Equipment</Tab></row><row><Tab>People</Tab></row></data>
@@ -51,7 +59,8 @@
 			},
 			error:err
 		});
-	}
+	}//end of getTabs
+
 	
 	function err(event){
 		console.log(event);
@@ -72,6 +81,9 @@
 				x+='<tr><td>Number of Members:</td><td>'+$(data).find('nummembers').text()+'</td></tr>';
 				x+='<tr><td>Number of Calls:</td><td>'+$(data).find('numcalls').text()+'</td></tr>';
 				$('#output').html(x);
+                //return x;
+                //$('#'+(this).text()).html(x);
+                
 			},
 			error:err
 		});
@@ -79,15 +91,34 @@
 	
 	function getLocations(id){
 		alert('get locations for '+id);
-	}
+        //getTabs(id);
+	}//end getlocations
+    
+    function getTreatment(id){
+        alert('get treatment for ' + id);
+    } //end getTreatment
+    
+    function getTraining(id){
+        alert('get training information for'+id);
+    }//end getTraining
 	
 	function getFacilities(id){
 		alert('get fac for '+id);
-	}
+	}//end getFacilities
+        
+    function getPhysicians(id){
+        alert('get physicians for '+id);
+    }//end of getPhysicians 
 	
 	function getPeople(id){
 		alert('get peps for '+id);
-	}
+	}//end getPeople
+    
+    function getEquipment(id){
+        alert('get equip'+id);
+    }//end getEquipment
+    
+    
 
 
 ///-------------------------------------------------
@@ -174,21 +205,24 @@ function checkSearch(){
 			//	one for everything else
 			if($(data).find('row').length==0){
 				//give feedback that there are no orgs for that!
+                var noData= '<p>There was no data found for this. Please make another selection</p>';
+                $('#tableOutput').html(noData);
+                
 			}else{
 				//give feedback on how many orgs were found
 				//put out table headers for labels of columns!
-				x='<table border="1">';
+				var x='<table border="1">';
 				$('row',data).each(function(){
 					x+='<tr>';
 					x+='<td>'+$(this).find('type').text()+'</td>';
-					x+='<td><span style="color:blue;cursor:pointer;" onclick="getTabs(' +$(this).find('OrganizationID').text()+ ')">'+$(this).find('Name').text()+'</span></td>';
+					x+='<td><span id="click" style="color:blue;cursor:pointer;" onclick="getTabs(' +$(this).find('OrganizationID').text()+ ')">'+$(this).find('Name').text()+'</span></td>';
 					x+='<td>'+$(this).find('Email').text()+'</td>';
 					x+='<td>'+$(this).find('city').text()+'</td>';
 					x+='<td>'+$(this).find('State').text()+'</td>';
 					x+='<td>'+$(this).find('CountyName').text()+'</td>';
 					x+='<td>'+$(this).find('zip').text()+'</td></tr>';
 				});
-				$('#tabelOutput').html(x+'</table>');
+				$('#tableOutput').html(x+'</table>');
 			}
 		},
 		error:err
@@ -208,7 +242,7 @@ function checkSearch(){
   <!------------------ Will Use soon! --------------->
   <form style="">
     <fieldset>
-      <legend>Search Criteria</legend>
+      <legend><a href="BackendDocumentation.html"> Search Criteria</a></legend>
       <p>Organization Type <select id="orgType" name="type" onchange=""></select></p>
       <p><span id="orgLabel">Organization Name</span> <input id="orgName" name="name" type="text"> <em style="color: rgb(104, 129, 162);">*can be partial - "vol" for "Volunteer"</em></p>
       <p>State <select name="state" id="state" onchange="getCities(this.value)">
@@ -270,11 +304,12 @@ function checkSearch(){
       <p>County <input id="county" name="county" type="text"></p>
       <p>ZIP Code <input id="zip" name="zip" type="text"></p>
       <div style="margin:0 0 0 210px">
-        <input value="Show Results" onclick="checkSearch()" id="btnSearch" class="button" type="button"> <input type="reset" class="button" value="Reset Form" onclick="">
+        <input value="Show Results" onclick="checkSearch()" id="btnSearch" class="button" type="button">
+        <input type="reset" class="button" value="Reset Form" onclick="">
       </div>
     </fieldset>
   </form>
-  <div id="tabelOutput"></div>
+  <div id="tableOutput"></div>
   <div id="dump"></div>
   <table id="output"></table>
 </body>
