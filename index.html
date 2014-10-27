@@ -72,22 +72,23 @@
 	}
 	
 		
-	function getGeneral(id){
+	function getGeneral(orgId){
 		$.ajax({
 			type:'get',
 			url:'media/proxy.php',
 			dataType:'xml', 
-			data:{path:'/'+id+'/General'},
+			data:{path:'/'+orgId+'/General'},
 			success: function(data){
-				var x='<tr><td>Name:</td><td>'+$(data).find('name').text()+'</td></tr>';
-				x+='<tr><td>Description</td><td>'+$(data).find('description').text()+'</td></tr>';
-				x+='<tr><td>Email:</td><td>'+$(data).find('email').text()+'</td></tr>';
-				x+='<tr><td>Website:</td><td>'+$(data).find('website').text()+'</td></tr>';
-				x+='<tr><td>Number of Members:</td><td>'+$(data).find('nummembers').text()+'</td></tr>';
-				x+='<tr><td>Number of Calls:</td><td>'+$(data).find('numcalls').text()+'</td></tr>';
-				$('#General').html(x);
-                //return x;
-                //$('#'+(this).text()).html(x);
+				var gen;
+                //gen+='<h2>General Information</h2>';
+                gen+='<tr><td>Name:</td><td>'+$(data).find('name').text()+'</td></tr>';
+				gen+='<tr><td>Description</td><td>'+$(data).find('description').text()+'</td></tr>';
+				gen+='<tr><td>Email:</td><td>'+$(data).find('email').text()+'</td></tr>';
+				gen+='<tr><td>Website:</td><td>'+$(data).find('website').text()+'</td></tr>';
+				gen+='<tr><td>Number of Members:</td><td>'+$(data).find('nummembers').text()+'</td></tr>';
+				gen+='<tr><td>Number of Calls:</td><td>'+$(data).find('numcalls').text()+'</td></tr>';
+				$('#General').html('<h2>General Information</h2>');
+                $('#General').append(gen);
                 
 			},
 			error:err
@@ -95,32 +96,64 @@
 	}
 	
 	function getLocations(id){
-		$('#Locations').html('here');
+		$('#Locations').html('here1');
         //alert('get locations for '+id);
         //getTabs(id);
 	}//end getlocations
-    
+//----------------------------------------------------------------------------------------------    
     function getTreatment(id){
-        //alert('get treatment for ' + id);
+       $.ajax({
+			type:'get',
+			url:'media/proxy.php',
+			dataType:'xml', 
+			data:{path:'/'+id+'/Treatments'},
+            success:function(data){
+				//checking for data
+				if($(data).find('count').text() != 0){
+					//making the table 
+					var treat = '<table id="treatmentInfo"><thead><tr><th>Type</th><th>Abbreviation</th></tr></thead><tbody>';
+					//getting the information from the xml and putting it into the table 
+					$('treatment',data).each(function(){
+						treat+='<tr><td>'+$(this).find('type').text()+'</td><td>'+$(this).find('abbreviation').text()+'</td></tr>';
+					});
+					treat+='</tbody></table>';
+				}
+				//if there arent treatments, display a message
+				else{
+					var treat = 'There is not treatment infomation for this organization.';
+				}
+				
+				//add the header and the table/msg to the page
+				$('#Treatment').html('<h2>Treatment</h2>');
+				$('#Treatment').append(treat);
+                
+			},
+			error:err
+		});
     } //end getTreatment
-    
+//-------------------------------------------------------------------------------------------------------------    
     function getTraining(id){
+        $('#Training').html('here3');
         //alert('get training information for'+id);
     }//end getTraining
-	
+//-------------------------------------------------------------------------------------------------------------	
 	function getFacilities(id){
+        $('#Facilities').html('here4');
 		//alert('get fac for '+id);
 	}//end getFacilities
-        
+//--------------------------------------------------------------------------------------------------------------        
     function getPhysicians(id){
+        $('#Physicians').html('here5');
         //alert('get physicians for '+id);
     }//end of getPhysicians 
-	
+//-------------------------------------------------------------------------------------------------------------	
 	function getPeople(id){
+        $('#People').html('here6');
 		//alert('get peps for '+id);
 	}//end getPeople
-    
+//-------------------------------------------------------------------------------------------------------------    
     function getEquipment(id){
+        $('#Locations').html('here7');
         //alert('get equip'+id);
     }//end getEquipment
     
