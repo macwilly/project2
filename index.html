@@ -185,7 +185,28 @@
 	}//end getFacilities
 //--------------------------------------------------------------------------------------------------------------        
     function getPhysicians(id){
-        $('#Physicians').html('here5');
+        $.ajax({
+            type:'get',
+            url:'media/proxy.php',
+            dataType:'xml',
+            data:{path:'/'+id+'/Physicians'},
+            success:function(data){
+                if($(data).find('count').text() !=0){
+                    var doc = '<table id="physicianTable"><thead><tr><th>Name</th><th>License</th><th>Contact</th></tr></thead><tbody>';
+                    $('physician',data).each(function(){
+                        doc +='<tr><td>'+$(this).find('fName').text()+' '+$(this).find('mName').text()+' '+$(this).find('lName').text()+'</td><td>'+$(this).find('license').text()+'</td><td>'+$(this).find('phone').text()+'</td></tr>';
+                    });
+                    doc+='</tbody></table>';
+                }//end if
+                else{
+                    var doc = 'There is no physcian information for this organization.';
+                }//end else
+                $('#Physicians').html('<h2>Physician Information</h2>');
+                $('#Physicians').append(doc);
+                
+            },//end of success
+            error:err
+        });//en of ajax
         //alert('get physicians for '+id);
     }//end of getPhysicians 
 //-------------------------------------------------------------------------------------------------------------	
@@ -195,7 +216,28 @@
 	}//end getPeople
 //-------------------------------------------------------------------------------------------------------------    
     function getEquipment(id){
-        $('#Locations').html('here7');
+         $.ajax({
+            type:'get',
+            url:'media/proxy.php',
+            dataType:'xml',
+            data:{path:'/'+id+'/Equipment'},
+            success:function(data){
+                if($(data).find('count').text() !=0){
+                    var equip = '<table id="equipmentTable"><thead><tr><th>Name</th><th>Quantity</th><th>Description</th></tr></thead><tbody>';
+                    $('equipment',data).each(function(){
+                        equip +='<tr><td>'+$(this).find('type').text()+'</td><td>'+$(this).find('quantity').text()+'</td><td>'+$(this).find('description').text()+'</td></tr>';
+                    });
+                    equip+='</tbody></table>';
+                }//end if
+                else{
+                    var equip = 'There is no equipment information for this organization.';
+                }//end else
+                $('#Equipment').html('<h2>Equipment Information</h2>');
+                $('#Equipment').append(equip);
+                
+            },//end of success
+            error:err
+        });//en of ajax
         //alert('get equip'+id);
     }//end getEquipment
     
