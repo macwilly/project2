@@ -168,7 +168,7 @@
             success:function(data){
                 if($(data).find('count').text() !=0){
                     var asset = '<table id="assestTable"><thead><tr><th>Name</th><th>Quantity</th><th>Description</th></tr></thead><tbody>';
-                    $('facilities',data).each(function(){
+                    $('facility',data).each(function(){
                         asset +='<tr><td>'+$(this).find('type').text()+'</td><td>'+$(this).find('quantity').text()+'</td><td>'+$(this).find('description').text()+'</td></tr>';
                     });
                     asset+='</tbody></table>';
