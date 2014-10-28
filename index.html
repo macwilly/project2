@@ -120,7 +120,7 @@
 				}
 				//if there arent treatments, display a message
 				else{
-					var treat = 'There is not treatment infomation for this organization.';
+					var treat = 'There is no treatment infomation for this organization.';
 				}
 				
 				//add the header and the table/msg to the page
@@ -132,8 +132,30 @@
 		});
     } //end getTreatment
 //-------------------------------------------------------------------------------------------------------------    
-    function getTraining(id){
-        $('#Training').html('here3');
+    function getTraining(orgId){
+        $.ajax({
+            type:'get',
+            url:'media/proxy.php',
+            dataType:'xml',
+            data:{path:'/'+orgId+'/Training'},
+            success:function(data){
+                if($(data).find('count').text() != 0){
+                    var train = '<table id="trainingInfo"><thead><tr><th>Type</th><th>Abbreviation</th></tr></thead><tbody>';
+                    $('training',data).each(function(){
+                        train+='<tr><td>'+$(this).find('type').text()+'</td><td>'+$(this).find('abbreviation').text()+'</td></tr>';
+                    });
+                    train+='</tbody></table>';
+                }
+                else{
+                    var train = 'There is no training information for this organization.';
+                }
+                $('#Training').html('<h2>Training</h2>');
+                $('#Training').append(train);
+                
+            },
+            error:err  
+        
+        });
         //alert('get training information for'+id);
     }//end getTraining
 //-------------------------------------------------------------------------------------------------------------	
