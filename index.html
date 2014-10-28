@@ -132,12 +132,12 @@
 		});
     } //end getTreatment
 //-------------------------------------------------------------------------------------------------------------    
-    function getTraining(orgId){
+    function getTraining(id){
         $.ajax({
             type:'get',
             url:'media/proxy.php',
             dataType:'xml',
-            data:{path:'/'+orgId+'/Training'},
+            data:{path:'/'+id+'/Training'},
             success:function(data){
                 if($(data).find('count').text() != 0){
                     var train = '<table id="trainingInfo"><thead><tr><th>Type</th><th>Abbreviation</th></tr></thead><tbody>';
@@ -160,8 +160,28 @@
     }//end getTraining
 //-------------------------------------------------------------------------------------------------------------	
 	function getFacilities(id){
-        $('#Facilities').html('here4');
-		//alert('get fac for '+id);
+        $.ajax({
+            type:'get',
+            url:'media/proxy.php',
+            dataType:'xml',
+            data:{path:'/'+id+'/Facilities'},
+            success:function(data){
+                if($(data).find('count').text() !=0){
+                    var asset = '<table id="assestTable"><thead><tr><th>Name</th><th>Quantity</th><th>Description</th></tr></thead><tbody>';
+                    $('facilities',data).each(function(){
+                        asset +='<tr><td>'+$(this).find('type').text()+'</td><td>'+$(this).find('quantity').text()+'</td><td>'+$(this).find('description').text()+'</td></tr>';
+                    });
+                    asset+='</tbody></table>';
+                }//end if
+                else{
+                    var asset = 'There is no facilities information for this organization.';
+                }//end else
+                $('#Facilities').html('<h2>Facilities Information</h2>');
+                $('#Facilities').append(asset);
+                
+            },//end of success
+            error:err
+        });//en of ajax
 	}//end getFacilities
 //--------------------------------------------------------------------------------------------------------------        
     function getPhysicians(id){
