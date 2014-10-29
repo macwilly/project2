@@ -7,12 +7,7 @@
 <script src="media/jquery-ui-1.11.1/jquery-ui.min.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" href="media/jquery-ui-1.11.1/jquery-ui.min.css">
 <script type="text/javascript">
-        //////////////////////////--making the dialog box--/////////////////////////////////    
- $(function() {
-    
-  });
 
-    
 	function getTabs(orgId){
 		//http://simon.ist.rit.edu:8080/Services/resources/ESD/Application/Tabs?orgId=1002
 		$.ajax({
@@ -52,15 +47,6 @@
                     getGeneral(orgId);
                 }//end of else 
                 
-				//<data><row><Tab>General</Tab></row><row><Tab>Locations</Tab></row><row><Tab>Treatment</Tab></row><row><Tab>Training</Tab></row><row><Tab>Equipment</Tab></row><row><Tab>People</Tab></row></data>
-				//build a select menu (you can't do this for your project, you must have tabs - but this will get you most of the way)
-				//var x='<select onchange="window[\'get\'+$(this).val()]('+orgId+')">';
-				//$('Tab',data).each(function(){
-					//output the options
-				//	x+='<option value="'+$(this).text()+'">'+$(this).text()+'</option>';
-				//});
-				//$('#dump').html(x+'</select>');
-				//getGeneral(id);
 			},
 			error:err
 		});
@@ -111,7 +97,7 @@
 				//checking for data
 				if($(data).find('count').text() != 0){
 					//making the table 
-					var treat = '<table id="treatmentInfo"><thead><tr><th>Type</th><th>Abbreviation</th></tr></thead><tbody>';
+					var treat = '<table id="treatmentInfo" border="1"><thead><tr><th>Type</th><th>Abbreviation</th></tr></thead><tbody>';
 					//getting the information from the xml and putting it into the table 
 					$('treatment',data).each(function(){
 						treat+='<tr><td>'+$(this).find('type').text()+'</td><td>'+$(this).find('abbreviation').text()+'</td></tr>';
@@ -140,7 +126,7 @@
             data:{path:'/'+id+'/Training'},
             success:function(data){
                 if($(data).find('count').text() != 0){
-                    var train = '<table id="trainingInfo"><thead><tr><th>Type</th><th>Abbreviation</th></tr></thead><tbody>';
+                    var train = '<table id="trainingInfo" border="1"><thead><tr><th>Type</th><th>Abbreviation</th></tr></thead><tbody>';
                     $('training',data).each(function(){
                         train+='<tr><td>'+$(this).find('type').text()+'</td><td>'+$(this).find('abbreviation').text()+'</td></tr>';
                     });
@@ -167,7 +153,7 @@
             data:{path:'/'+id+'/Facilities'},
             success:function(data){
                 if($(data).find('count').text() !=0){
-                    var asset = '<table id="assestTable"><thead><tr><th>Name</th><th>Quantity</th><th>Description</th></tr></thead><tbody>';
+                    var asset = '<table id="assestTable" border="1"><thead><tr><th>Name</th><th>Quantity</th><th>Description</th></tr></thead><tbody>';
                     $('facility',data).each(function(){
                         asset +='<tr><td>'+$(this).find('type').text()+'</td><td>'+$(this).find('quantity').text()+'</td><td>'+$(this).find('description').text()+'</td></tr>';
                     });
@@ -192,7 +178,7 @@
             data:{path:'/'+id+'/Physicians'},
             success:function(data){
                 if($(data).find('count').text() !=0){
-                    var doc = '<table id="physicianTable"><thead><tr><th>Name</th><th>License</th><th>Contact</th></tr></thead><tbody>';
+                    var doc = '<table id="physicianTable" border="1"><thead><tr><th>Name</th><th>License</th><th>Contact</th></tr></thead><tbody>';
                     $('physician',data).each(function(){
                         doc +='<tr><td>'+$(this).find('fName').text()+' '+$(this).find('mName').text()+' '+$(this).find('lName').text()+'</td><td>'+$(this).find('license').text()+'</td><td>'+$(this).find('phone').text()+'</td></tr>';
                     });
@@ -211,8 +197,27 @@
     }//end of getPhysicians 
 //-------------------------------------------------------------------------------------------------------------	
 	function getPeople(id){
-        $('#People').html('here6');
-		//alert('get peps for '+id);
+            type:'get',
+            url:'media/proxy.php',
+            dataType:'xml',
+            data:{path:'/'+id+'/People'},
+            success:function(data){
+                if($(data).find('count').text() !=0){
+                    var doc = '<table id="physicianTable" border="1"><thead><tr><th>Name</th><th>License</th><th>Contact</th></tr></thead><tbody>';
+                    $('physician',data).each(function(){
+                        doc +='<tr><td>'+$(this).find('fName').text()+' '+$(this).find('mName').text()+' '+$(this).find('lName').text()+'</td><td>'+$(this).find('license').text()+'</td><td>'+$(this).find('phone').text()+'</td></tr>';
+                    });
+                    doc+='</tbody></table>';
+                }//end if
+                else{
+                    var doc = 'There is no physcian information for this organization.';
+                }//end else
+                $('#Physicians').html('<h2>Physician Information</h2>');
+                $('#Physicians').append(doc);
+                
+            },//end of success
+            error:err
+        });
 	}//end getPeople
 //-------------------------------------------------------------------------------------------------------------    
     function getEquipment(id){
@@ -223,7 +228,7 @@
             data:{path:'/'+id+'/Equipment'},
             success:function(data){
                 if($(data).find('count').text() !=0){
-                    var equip = '<table id="equipmentTable"><thead><tr><th>Name</th><th>Quantity</th><th>Description</th></tr></thead><tbody>';
+                    var equip = '<table id="equipmentTable" border="1"><thead><tr><th>Name</th><th>Quantity</th><th>Description</th></tr></thead><tbody>';
                     $('equipment',data).each(function(){
                         equip +='<tr><td>'+$(this).find('type').text()+'</td><td>'+$(this).find('quantity').text()+'</td><td>'+$(this).find('description').text()+'</td></tr>';
                     });
@@ -301,7 +306,12 @@ function getCities(state){
 	});
 }
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function removeBox(){
+    $('#tableOutput').html('');
+}
+    
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function checkSearch(){
 	//go get the data!
 	//console.log($('form:first').serialize());
@@ -313,28 +323,27 @@ function checkSearch(){
 		data:{path:'/Organizations?'+$('form:first').serialize()},
 		dataType:'xml',
 		success:function(data,status){
-			/*<row>
-<OrganizationID>1877</OrganizationID>
-<type>Fire Department</type>
-<Name>3-G (Glenfield) Fire Department</Name>
-<Email>amandajean57@yahoo.com</Email>
-<city>Glenfield</city>
-<zip>13345</zip>
-<CountyName>Lewis</CountyName>
-<State>NY</State>
-</row>*/
 			//when we get this back, we will get 2 different data sets
-			//	one for physician (your problem)
-			//	one for everything else
-			if($(data).find('row').length==0){
-				//give feedback that there are no orgs for that!
-                var noData= '<p>There was no data found for this. Please make another selection</p>';
-                $('#tableOutput').html(noData);
-                
-			}else{
-				//give feedback on how many orgs were found
-				//put out table headers for labels of columns!
-				var x='<table border="1">';
+			//	one for physician (your problem) not anymore
+            if($('#orgType').val()=='Physician'){
+                var x = '<table id="resultTable" border="1" ><thead><tr><th>Physician</th><th>Type</th><th>Organization Name</th><th>City</th><th>State</th><th>Zip</th><th>County</th><th>Phone</th></tr></thead><tbody>';
+                $('row',data).each(function(){
+                   x+= '<tr>';
+                   x+= '<td>'+$(this).find('fName').text()+' '+$(this).find('mName').text()+' '+$(this).find('lName').text()+'</td>';
+                   x+= '<td>'+$(this).find('type').text()+'</td>';
+                   x+= '<td><span id="click" style="color:blue;cursor:pointer;" onclick="getTabs(' +$(this).find('OrganizationID').text()+ ')">'+$(this).find('Name').text()+'</span></td>';
+                   x+= '<td>'+$(this).find('city').text()+'</td>';
+                   x+= '<td>'+$(this).find('state').text()+'</td>';
+                   x+= '<td>'+$(this).find('zip').text()+'</td>';
+                   x+= '<td>'+$(this).find('CountyName').text()+'</td>';
+                   x+= '<td>'+$(this).find('phone').text()+'</td>';
+                   x+= '</tr>';
+                });
+                    
+            }
+            // for everything that is not physician 
+            else{
+                var x ='<table id="resultTable" border="1"><thead><tr><th>Type</th><th>Name</th><th>Email</th><th>City</th><th>State</th><th>Zip</th><th>County</th></tr></thead><tbody>';
 				$('row',data).each(function(){
 					x+='<tr>';
 					x+='<td>'+$(this).find('type').text()+'</td>';
@@ -345,24 +354,27 @@ function checkSearch(){
 					x+='<td>'+$(this).find('CountyName').text()+'</td>';
 					x+='<td>'+$(this).find('zip').text()+'</td></tr>';
 				});
-				$('#tableOutput').html(x+'</table>');
+                                                  
+            }//end else
+            x+='</tbody></table>';
+			// make sure there is data 
+			if($(data).find('row').length==0){
+				//give feedback that there are no orgs for that!
+                var noData= '<p>There was no data found for this. Please make another selection</p>';
+                $('#tableOutput').html('<h1>Search Results</h1>');
+                $('#tableOutput').append(noData);
+                
+			}else{
+                $('#tableOutput').html('<h1>Search Results</h1>');
+				$('#tableOutput').append(x);
 			}
 		},
 		error:err
 	});
 }
-
-
 </script>
 </head>
-<body><!--
-  <h2>ESD Example</h2>Input org Id:
-  <form>
-    <input type="text" id="orgId"/><input type="button" value="find data" onclick="getTabs($('#orgId').val())"/>
-    
-  </form>
-  <hr>-->
-  <!------------------ Will Use soon! --------------->
+<body>
   <form style="">
     <fieldset>
       <legend><a href="BackendDocumentation.html"> Search Criteria</a></legend>
@@ -428,7 +440,7 @@ function checkSearch(){
       <p>ZIP Code <input id="zip" name="zip" type="text"></p>
       <div style="margin:0 0 0 210px">
         <input value="Show Results" onclick="checkSearch()" id="btnSearch" class="button" type="button">
-        <input type="reset" class="button" value="Reset Form" onclick="">
+        <input type="reset" class="button" value="Reset Form" onclick="removeBox()">
       </div>
     </fieldset>
   </form>
