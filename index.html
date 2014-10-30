@@ -196,75 +196,7 @@
         //alert('get physicians for '+id);
     }//end of getPhysicians 
     
-    
-//-------------------------------------------------------------------------------------------------------------	
-	/*function getPeople(id){
-         $.ajax({
-            type:'get',
-            url:'media/proxy.php',
-            dataType:'xml',
-            data:{path:'/'+id+'/People'},
-            success:function(data){
-                if($(data).find('siteCount').text() !=0){
-                            
-                    var site='<select id="peopleSite" onchange="window[\'getThePeople\']($(this).val(),'+id+');">';
-                    $('site',data).each(function(){
-                        site += '<option value="'+$(this).attr('siteId')+'">'+$(this).attr('address')+'</option>';
-                    });
-                    $('#People').html('<h2>People</h2>');
-                    $('#People').append(site+'</select>');
-                    getThePeople($('#peopleSite').val(),id);
-                }
-                //if there is no site count
-                else{
-                    var site= 'There is no information for this area. Please make another selection.';
-                    $('#People').html('<h2>People</h2>');
-                    $('$People').append(site+'</select>');
-                }
-            },//end of success
-            error:err
-        });//en of ajax
-           
-	}//end getPeople
-
-//-------------------------------------------------------------------------------------------------------------    
-    function getThePeople(site, id){
-        $.ajax({
-           type:'get',
-            url:'media/proxy.php',
-            dataType:'xml',
-            data:{path:'/'+id+'/People'},
-            success:function(data){
-                 $('#peopleData').remove();
-                 $('#People').append('<div id="peopleData"></div>');
-                 var pep;
-              
-                $('site',data).each(function(){  
-                  if($(this).attr('siteId')==site){
-                      if($(this).find('personCount').text()!=0){
-                        var pep = '<table id="person"><thead><tr><th>Name</th><th>Role</th></tr></thead><tbody>';
-                          $('person',this).each(function(){
-                             pep += '<tr><td>'+$(this).find('fName').text()+' '+$(this).find('mName').text()+' '+$(this).find('lName').text()+'</td><td>'+$(this).find('role').text()+'</td></tr>';
-                          });
-                          pep +='</tbody></table>';
-                      }//end of personCount if
-                      else{
-                          var pep = 'There are no people at this location. Please make another selection.';
-                      }
-                  } //end of siteId if
-                   $('#peopleSite').html(pep);
-               });
-                
-            },
-            error:err
-        });
-        
-    }//end of getThePeople*/
-///* ******************************************************************************************************************************************************************************************************
-    
-    /*
-	 * getPeople(orgId)
-	 * gets a list of sites for the org and sends the id off to get the people that are at that location*/
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	function getPeople(id){
 		$.ajax({
@@ -306,10 +238,9 @@
 			data:{path:'/'+id+'/People'},
 			success:function(data){
 				//remove the child table and add it back
-				$('#peopleData').remove();                                        //do not know if I need this line
-				$('#People').append('<div id="peopleData"></div>');				  //do knot know if i need this line
-				
-				//x is the table string
+				$('#peopleData').remove();                                    
+				$('#People').append('<div id="peopleData"></div>');
+                
 				var pep;
 				
 				//for each site
@@ -331,22 +262,14 @@
 						}
 					}
 				});
-				//add the message/table	
-				$('#peopleData').html(pep);
+				//add the message/table
+                $('#peopleData').html('<h3>'+$('peopleArea').val()+'</h3>')
+				$('#peopleData').append(pep);
 				
 			},
             error:err
 		});
-	}
-    
-    
-///********************************************************************************************************************************************************************************************************   */ 
-    
-    
-    
-    
-    
-    
+	}    
 //-------------------------------------------------------------------------------------------------------------    
     function getEquipment(id){
          $.ajax({
