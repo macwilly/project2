@@ -36,7 +36,7 @@
 						//build the links/tabs
 						tabs+='<li><a href="#'+$(this).text()+'" onclick="window[\'get'+$(this).text()+'\']('+orgId+')">'+$(this).text()+'</a></li>';
 						//build the divs by calling the tab's getInfo functions
-						innerDiv+='<div id="'+$(this).text()+'"></div>';
+						innerDiv+='<div id="'+$(this).text()+'"></div>';//put an image of a spinner and set the display to none then it is on when you do the click 
 					});
                     
                     box +=tabs + '</ul>' + innerDiv + '</div></div>';
@@ -82,18 +82,55 @@
 		});
 	}
 //------------------------------------------------------------------------------------------------------	
-	function getLocations(id){
+	
+    function getLocations(id){
+	//turn on the load image
+	$.ajax({
+		type:'get',
+		url:'media/proxy.php',
+		dataType:'xml',
+		data:{path:'/'+id+'/Locations'},
+		success: function(data){
+			var locInform
+			if(parseInt($(data).find('count').text())>0){
+				locInform+='<div id="locationAccordion">';
+				$('location',data).each(function(){
+					locInform += '<h3>'+'Type: '+ $(this).find('type').text()+'</h3>';
+					locInform += '<div><table>';
+					locInform += '<tr><td>Type:</td><td>'+$(this).find('type').text()+'</td></tr>';
+					locInform += '</table></div>';
+				});
+				$('#Locations').html(locInform);
+				$('#locationAccordion').accordion();
+			}//end of if
+			else{
+				var locInform='There is no loaction information for this organization.';
+				$('#Locations').html(locInform);
+			}//end else
+		},
+		error:err
+	});//end of ajax
+}
+    
+    
+    
+    
+    /*function getLocations(id){
+        //turn on load image 
 		$.ajax({
             type:'get',
             url:'media/proxy.php',
             dataType:'xml',
-            data:{path:'/'+id+'Locations'},
+            data:{path:'/'+id+'/Locations'},
             success:function(data){
-                console.log(data);
-                if($(data).find('count').text() !=0){
+                //turn off load image
+                console.log($(data).find('count').text());
+                console.log(typeof($(data).find('count').text()));
+                if(parseInt($(data).find('count').text())>0){
+                    console.log('here');
                   var locSel='<select id="locSel" onchange="window[\'getLocInf\']($this).val(),'+id+');">';
                   $('location',data).each(function(){
-                      locSel='<option value="'+$(this).find('type').text()+'">Location: '+$(this).find('type').text()+'</option>';
+                      locSel+='<option value="'+$(this).find('type').text()+'">Location: '+$(this).find('type').text()+'</option>';
                   });//end of each
                     $('#Locations').html('<h2>Location Information</h2>');
                     $('#Locations').append(locSel+'</select>');
@@ -135,7 +172,7 @@
 			},//end of success
 			error:err
 		});// end of ajax
-	}//end of getLocInf
+	}//end of getLocInf*/
 //----------------------------------------------------------------------------------------------    
     function getTreatment(id){
        $.ajax({
