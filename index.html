@@ -5,7 +5,9 @@
   <title>Medical Services Search</title>
 <script src="http://code.jquery.com/jquery-latest.js" type="text/javascript"></script>
 <script src="media/jquery-ui-1.11.1/jquery-ui.min.js" type="text/javascript"></script>
+<script src="//cdn.datatables.net/1.10.3/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" type="text/css" href="media/jquery-ui-1.11.1/jquery-ui.min.css">
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.3/css/jquery.dataTables.css">
 <script type="text/javascript">
 
 	function getTabs(orgId){
@@ -40,7 +42,7 @@
                     box +=tabs + '</ul>' + innerDiv + '</div></div>';
                     $('body').append(box);
                     $("#dialogBox").dialog({width:870,
-                                            height:500,
+                                            height:710,
                                             modal:true,
                                             close:function(){$(this).dialog("destroy");$('#dialogBox').remove();}} );
                     $('#tabs').tabs();
@@ -75,17 +77,65 @@
 				gen+='<tr><td>Number of Calls:</td><td>'+$(data).find('numcalls').text()+'</td></tr>';
 				$('#General').html('<h2>General Information</h2>');
                 $('#General').append(gen);
-                
 			},
 			error:err
 		});
 	}
-	
+//------------------------------------------------------------------------------------------------------	
 	function getLocations(id){
-		$('#Locations').html('here1');
-        //alert('get locations for '+id);
-        //getTabs(id);
+		$.ajax({
+            type:'get',
+            url:'media/proxy.php',
+            dataType:'xml',
+            data:{path:'/'+id+'Locations'},
+            success:function(data){
+                console.log(data);
+                if($(data).find('count').text() !=0){
+                  var locSel='<select id="locSel" onchange="window[\'getLocInf\']($this).val(),'+id+');">';
+                  $('location',data).each(function(){
+                      locSel='<option value="'+$(this).find('type').text()+'">Location: '+$(this).find('type').text()+'</option>';
+                  });//end of each
+                    $('#Locations').html('<h2>Location Information</h2>');
+                    $('#Locations').append(locSel+'</select>');
+                }//end if count
+                else{
+                    var locSel='There is not location information for this.';
+                    $('#Locations').html('<h2>Location Information</h2>');
+                    $('#Locations').append(locSel+'</select>');
+                }//end else
+            },//end of success
+            error:err
+        });//end of ajax
 	}//end getlocations
+    
+    
+    
+    function getLocInf(id){
+		$.ajax({
+			type:'get',
+			url:'media/proxy.php',
+			dataType:'xml',
+			data:{path:'/'+id+'/Locations'},
+			success:function(data){
+                var locInform='<table>';
+                $('location',data).each(function(){
+                    locInform+='<tr><td>Type: </td><td>'+nullFind($(this).find('type').text())+'</td></tr>';
+                    locInform+='<tr><td>Address 1: </td><td>'+nullFind($(this).find('address1').text())+'</td></tr>';
+                    locInform+='<tr><td>Address 2: </td><td>'+nullFind($(this).find('address2').text())+'</td></tr>';
+                    locInform+='<tr><td>City: </td><td>'+nullFind($(this).find('city').text())+'</td></tr>';
+                    locInform+='<tr><td>State: </td><td>'+nullFind($(this).find('state').text())+'</td></tr>';
+                    locInform+='<tr><td>Zip: </td><td>'+nullFind($(this).find('zip').text())+'</td></tr>';
+                    locInform+='<tr><td>Phone: </td><td>'+nullFind($(this).find('phone').text())+'</td></tr>';
+                    locInform+='<tr><td>TTY: </td><td>'+$nullFind((this).find('ttyphone').text())+'</td></tr>';
+                    locInform+='<tr><td>Fax: </td><td>'+$nullFind((this).find('fax').text())+'</td></tr>';
+                    
+                });
+               locInform+='</table>'; 
+                $('#Locations').append(locInform); 
+			},//end of success
+			error:err
+		});// end of ajax
+	}//end of getLocInf
 //----------------------------------------------------------------------------------------------    
     function getTreatment(id){
        $.ajax({
@@ -97,10 +147,10 @@
 				//checking for data
 				if($(data).find('count').text() != 0){
 					//making the table 
-					var treat = '<table id="treatmentInfo" border="1"><thead><tr><th>Type</th><th>Abbreviation</th></tr></thead><tbody>';
+					var treat = '<table id="treatmentInfo"><thead><tr><th>Type</th><th>Abbreviation</th></tr></thead><tbody>';
 					//getting the information from the xml and putting it into the table 
 					$('treatment',data).each(function(){
-						treat+='<tr><td>'+$(this).find('type').text()+'</td><td>'+$(this).find('abbreviation').text()+'</td></tr>';
+						treat+='<tr><td>'+nullFind($(this).find('type').text())+'</td><td>'+nullFind($(this).find('abbreviation').text())+'</td></tr>';
 					});
 					treat+='</tbody></table>';
 				}
@@ -112,11 +162,12 @@
 				//add the header and the table/msg to the page
 				$('#Treatment').html('<h2>Treatment</h2>');
 				$('#Treatment').append(treat);
+                $('#treatmentInfo').DataTable();
                 
 			},
 			error:err
 		});
-    } //end getTreatment
+    }
 //-------------------------------------------------------------------------------------------------------------    
     function getTraining(id){
         $.ajax({
@@ -126,9 +177,9 @@
             data:{path:'/'+id+'/Training'},
             success:function(data){
                 if($(data).find('count').text() != 0){
-                    var train = '<table id="trainingInfo" border="1"><thead><tr><th>Type</th><th>Abbreviation</th></tr></thead><tbody>';
+                    var train = '<table id="trainingInfo"><thead><tr><th>Type</th><th>Abbreviation</th></tr></thead><tbody>';
                     $('training',data).each(function(){
-                        train+='<tr><td>'+$(this).find('type').text()+'</td><td>'+$(this).find('abbreviation').text()+'</td></tr>';
+                        train+='<tr><td>'+nullFind($(this).find('type').text())+'</td><td>'+nullFind($(this).find('abbreviation').text())+'</td></tr>';
                     });
                     train+='</tbody></table>';
                 }
@@ -137,13 +188,14 @@
                 }
                 $('#Training').html('<h2>Training</h2>');
                 $('#Training').append(train);
+                $('#trainingInfo').DataTable();
                 
             },
             error:err  
         
         });
-        //alert('get training information for'+id);
-    }//end getTraining
+        
+    }
 //-------------------------------------------------------------------------------------------------------------	
 	function getFacilities(id){
         $.ajax({
@@ -153,9 +205,9 @@
             data:{path:'/'+id+'/Facilities'},
             success:function(data){
                 if($(data).find('count').text() !=0){
-                    var asset = '<table id="assestTable" border="1"><thead><tr><th>Name</th><th>Quantity</th><th>Description</th></tr></thead><tbody>';
+                    var asset = '<table id="assestTable"><thead><tr><th>Name</th><th>Quantity</th><th>Description</th></tr></thead><tbody>';
                     $('facility',data).each(function(){
-                        asset +='<tr><td>'+$(this).find('type').text()+'</td><td>'+$(this).find('quantity').text()+'</td><td>'+$(this).find('description').text()+'</td></tr>';
+                        asset +='<tr><td>'+nullFind($(this).find('type').text())+'</td><td>'+nullFind($(this).find('quantity').text())+'</td><td>'+nullFind($(this).find('description').text())+'</td></tr>';
                     });
                     asset+='</tbody></table>';
                 }//end if
@@ -164,6 +216,7 @@
                 }//end else
                 $('#Facilities').html('<h2>Facilities Information</h2>');
                 $('#Facilities').append(asset);
+                $('#assestTable').DataTable();
                 
             },//end of success
             error:err
@@ -178,22 +231,22 @@
             data:{path:'/'+id+'/Physicians'},
             success:function(data){
                 if($(data).find('count').text() !=0){
-                    var doc = '<table id="physicianTable" border="1"><thead><tr><th>Name</th><th>License</th><th>Contact</th></tr></thead><tbody>';
+                    var doc = '<table id="physicianTable"><thead><tr><th>Name</th><th>License</th><th>Contact</th></tr></thead><tbody>';
                     $('physician',data).each(function(){
-                        doc +='<tr><td>'+$(this).find('fName').text()+' '+$(this).find('mName').text()+' '+$(this).find('lName').text()+'</td><td>'+$(this).find('license').text()+'</td><td>'+$(this).find('phone').text()+'</td></tr>';
+                        doc +='<tr><td>'+nullFind($(this).find('fName').text())+' '+nullFind($(this).find('mName').text())+' '+nullFind($(this).find('lName').text())+'</td><td>'+nullFind($(this).find('license').text())+'</td><td>'+nullFind($(this).find('phone').text())+'</td></tr>';
                     });
                     doc+='</tbody></table>';
-                }//end if
-                else{
+                }else{
                     var doc = 'There is no physcian information for this organization.';
-                }//end else
+                }
                 $('#Physicians').html('<h2>Physician Information</h2>');
                 $('#Physicians').append(doc);
+                $('#physicianTable').DataTable();
                 
-            },//end of success
+                
+            },
             error:err
         });//en of ajax
-        //alert('get physicians for '+id);
     }//end of getPhysicians 
     
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -209,18 +262,13 @@
 				if($(data).find('siteCount').text() != 0){
 					var area='<select id="peopleArea" onchange="window[\'getThePeople\']($(this).val(),'+id+');">';
 					$('site',data).each(function(){
-						 
-						//note, you cannot have a select menu, you must do something like tabs
 						area+='<option value="'+$(this).attr('siteId')+'">'+$(this).attr('address')+'</option>';
 					});
-					//add header and table
 					$('#People').html('<h2>People</h2>');
 					$('#People').append(area +'</select>');
 					//send off info to grab the people
 					getThePeople($('#peopleArea').val(), id);
-				}
-				//else
-				else{
+				}else{
 					var area = 'There is no information for this area. Please make another selection.';
 					$('#People').html('<h2>People</h2>');
 					$('#People').append(area +'</select>');
@@ -251,7 +299,7 @@
 						if($(this).find('personCount').text()!=0){
 							pep = '<table id="personTable"><thead><tr><th>Name</th><th>Role</th></tr></thead><tbody>';
 							$('person', this).each(function(){
-								pep += '<tr><td>'+$(this).find('fName').text()+' '+$(this).find('mName').text()+' '+$(this).find('lName').text()+'</td><td>'+$(this).find('role').text()+'</td></tr>';	
+								pep += '<tr><td>'+nullFind($(this).find('honorific').text())+' '+nullFind($(this).find('fName').text())+' '+nullFind($(this).find('mName').text())+' '+nullFind($(this).find('lName').text())+'</td><td>'+nullFind($(this).find('role').text())+'</td></tr>';	
 							});
 							//end table
 							pep+='</tbody></table>';
@@ -263,9 +311,10 @@
 					}
 				});
 				//add the message/table
-                $('#peopleData').html('<h3>'+$('peopleArea').val()+'</h3>')
+                $('#peopleData').html('<h3>'+$('#peopleArea option:selected').text()+'</h3>')
 				$('#peopleData').append(pep);
-				
+				$('#personTable').DataTable();
+                				
 			},
             error:err
 		});
@@ -279,7 +328,7 @@
             data:{path:'/'+id+'/Equipment'},
             success:function(data){
                 if($(data).find('count').text() !=0){
-                    var equip = '<table id="equipmentTable" border="1"><thead><tr><th>Name</th><th>Quantity</th><th>Description</th></tr></thead><tbody>';
+                    var equip = '<table id="equipmentTable"><thead><tr><th>Name</th><th>Quantity</th><th>Description</th></tr></thead><tbody>';
                     $('equipment',data).each(function(){
                         equip +='<tr><td>'+$(this).find('type').text()+'</td><td>'+$(this).find('quantity').text()+'</td><td>'+$(this).find('description').text()+'</td></tr>';
                     });
@@ -290,6 +339,7 @@
                 }//end else
                 $('#Equipment').html('<h2>Equipment Information</h2>');
                 $('#Equipment').append(equip);
+                $('#equipmentTable').DataTable();
                 
             },//end of success
             error:err
@@ -363,6 +413,16 @@ function removeBox(){
 }
     
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function nullFind(data){
+    if(data=='null'){
+        data='';
+    }    
+    return data;
+}
+   
+    
+    
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////    
 function checkSearch(){
 	//go get the data!
 	//console.log($('form:first').serialize());
@@ -377,7 +437,7 @@ function checkSearch(){
 			//when we get this back, we will get 2 different data sets
 			//	one for physician (your problem) not anymore
             if($('#orgType').val()=='Physician'){
-                var x = '<table id="resultTable" border="1" ><thead><tr><th>Physician</th><th>Type</th><th>Organization Name</th><th>City</th><th>State</th><th>Zip</th><th>County</th><th>Phone</th></tr></thead><tbody>';
+                var x = '<table id="resultTable"><thead><tr><th>Physician</th><th>Type</th><th>Organization Name</th><th>City</th><th>State</th><th>Zip</th><th>County</th><th>Phone</th></tr></thead><tbody>';
                 $('row',data).each(function(){
                    x+= '<tr>';
                    x+= '<td>'+$(this).find('fName').text()+' '+$(this).find('mName').text()+' '+$(this).find('lName').text()+'</td>';
@@ -394,7 +454,7 @@ function checkSearch(){
             }
             // for everything that is not physician 
             else{
-                var x ='<table id="resultTable" border="1"><thead><tr><th>Type</th><th>Name</th><th>Email</th><th>City</th><th>State</th><th>Zip</th><th>County</th></tr></thead><tbody>';
+                var x ='<table id="resultTable"><thead><tr><th>Type</th><th>Name</th><th>Email</th><th>City</th><th>State</th><th>Zip</th><th>County</th></tr></thead><tbody>';
 				$('row',data).each(function(){
 					x+='<tr>';
 					x+='<td>'+$(this).find('type').text()+'</td>';
@@ -418,6 +478,7 @@ function checkSearch(){
 			}else{
                 $('#tableOutput').html('<h1>Search Results</h1>');
 				$('#tableOutput').append(x);
+                $('#resultTable').DataTable();
 			}
 		},
 		error:err
