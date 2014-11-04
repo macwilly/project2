@@ -29,7 +29,7 @@
                     
                     box +=tabs + '</ul>' + innerDiv + '</div></div>';
                     $('body').append(box);
-                    $("#dialogBox").dialog({width:870,
+                    $("#dialogBox").dialog({width:900,
                                             height:710,
                                             modal:true,
                                             close:function(){$(this).dialog("destroy");$('#dialogBox').remove();}} );
@@ -82,13 +82,11 @@ function getLocations(id){
 		data:{path:'/'+id+'/Locations'},
 		success: function(data){
             $('#Locations').activity(false);
-			var locInform;
-            var map;
-            parseFloat
+			var locInform='';
 			if(parseInt($(data).find('count').text())>0){
 				locInform+='<div id="locationAccordion">';
 				$('location',data).each(function(){
-					locInform += '<h3>'+'Type: '+ $(this).find('type').text()+'</h3>';
+					locInform += '<h3>Type: '+ $(this).find('type').text()+'</h3>';
 					locInform += '<div><div id="map_'+nullFind($(this).find('siteId').text())+'" style="float:left;"></div><table>';
 					locInform += '<tr><td>Type:</td><td>'+nullFind($(this).find('type').text())+'</td></tr>';
 					locInform += '<tr><td>Addres 1:</td><td>'+nullFind($(this).find('address1').text())+'</td></tr>';
@@ -144,15 +142,15 @@ function getLocations(id){
                           },//end map
                         });//end #map
                     }//end else
-                                                                                                                                                      
-                                                                                                                                 
+                                                                                                                                                                                                                                                                 
                     });
                 
             }
 			else{
 				var locInform='There is no loaction information for this organization.';
 				$('#Locations').html(locInform);
-			}//end else
+			}
+            //end else
         },
         error:err
 	});//end of ajax
@@ -429,9 +427,9 @@ function getCities(state){
 		success:function(data,status){
 			//what if there are no cities?
 			if($(data).find('row').length==0){
-				var x='<span style="color:red">there are no cities here</span>';
+				var x='<span style="color: #9932CC">there are no towns here</span>';
 			}else{
-				var x='<select name="town"><option value="">--Select a city--</option>';
+				var x='<select name="town"><option value="">--Select a Town--</option>';
 				$('row',data).each(function(){
 					x+='<option value="'+$(this).text()+'">'+$(this).text()+'</option>';
 				});
@@ -455,8 +453,25 @@ function nullFind(data){
     }    
     return data;
 }
-   
-    
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function changeName(){
+    if($('#orgType').val()=='Physician'){
+        $('#change').remove();
+        $('#orgName').remove();
+        $('#changeToo').remove();
+                
+        var newIn='<span id="change">Physician Name </span><input id="orgName" name="name" type="text"><em id="changeToo"></em>';
+        $('#ifPhysician').append(newIn);
+    }
+    else{
+        $('#change').remove();
+        $('#orgName').remove();
+        $('#changeToo').remove();
+        var newIn='<span id="change">Organization Name</span> <input id="orgName" name="name" type="text"> <em  id="changeToo"style="color: #9932CC;">*can be partial - "vol" for "Volunteer"</em>';
+        $('#ifPhysician').append(newIn);
+    }
+}    
     
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////    
 function checkSearch(){
@@ -508,7 +523,7 @@ function checkSearch(){
 			// make sure there is data 
 			if($(data).find('row').length==0){
 				//give feedback that there are no orgs for that!
-                var noData= '<p>There was no data found for this. Please make another selection</p>';
+                var noData= '<p style="color:#9932CC;font-size:2em;">There was no data found for this. Please make another selection</p>';
                 $('#tableOutput').html('<h1>Search Results</h1>');
                 $('#tableOutput').append(noData);
                 

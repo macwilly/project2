@@ -1,0 +1,50 @@
+html, body{
+    background-color: #202020;
+    font-family: 'Cabin', sand-serif;
+}
+form{
+    background-color: #150C04;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+    border-radius: 8px;
+    padding: 6px;
+    font-size: 1.25em;
+    color: white;
+}
+#btnSearch{
+    border-radius: 8px;
+    background-color: #CF7929;
+    border: 1px solid #92EA26;
+}
+#btnReset{
+    border-radius: 8px;
+    background-color: #CF7929;
+    border: 1px solid #92EA26;
+}
+form fieldset{
+    background-color:#3E240C;
+    border: 1px solid #92EA26;
+    border-radius: 8px;
+}
+a:link{
+    color: #92EA26;
+    text-decoration: none; 
+}
+a:visited{
+    color: #CF7929;
+    text-decoration: none;
+}
+a:hover{
+    color: white;
+    text-decoration: underline;
+}
+h1{
+    color: #CF7929;
+}
+h2{
+    color: #CF7929;
+}
+h3{
+    color:#CF7929;
+}
