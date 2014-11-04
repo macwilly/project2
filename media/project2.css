@@ -12,6 +12,14 @@ form{
     font-size: 1.25em;
     color: white;
 }
+form fieldset{
+    width:90%;
+    background-color:#3E240C;
+    border: 1px solid #92EA26;
+    border-radius: 8px;
+    margin-left: auto;
+    margin-right: auto;
+}
 #btnSearch{
     border-radius: 8px;
     background-color: #CF7929;
@@ -21,11 +29,6 @@ form{
     border-radius: 8px;
     background-color: #CF7929;
     border: 1px solid #92EA26;
-}
-form fieldset{
-    background-color:#3E240C;
-    border: 1px solid #92EA26;
-    border-radius: 8px;
 }
 a:link{
     color: #92EA26;

@@ -389,8 +389,14 @@ function getLocations(id){
 //onload go get the orgTypes and the cities...
 $(document).ready(function(){
 	getCities( $('#state').val() );
+    getCounties($('#state').val());
 	getOrgTypes();
 });
+
+function countyCity(state){
+    getCities( $('#state').val() );
+    getCounties($('#state').val());
+}
 
 
 function getOrgTypes(){
@@ -439,6 +445,30 @@ function getCities(state){
 		},
 		error:err
 	});
+}
+
+function getCounties(state){
+    $.ajax({
+        type:'get',
+        async:true,
+        cache:false,
+        url:'media/proxy.php',
+        data:{path:'/Counties?state='+state},
+        dataType:'xml',
+        success:function(data,status){
+            if($(data).find('row').length==0){
+                var x='<span style="color: #9932CC">there are no cointies here</span>';
+            }else{
+                var x='<select name="county"><option value="">--Select a County--</option>';
+                $('row',data).each(function(){
+                    x+='<option value="'+$(this).find('CountyName').text()+'">'+$(this).find('CountyName').text()+'</option>';
+                });
+                x+='</select>'; 
+            }
+            $('#orgCountySearch').html(x);
+        },
+        error:err
+    });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

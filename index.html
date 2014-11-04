@@ -24,7 +24,7 @@
       <legend><a href="BackendDocumentation.html"> Search Criteria</a></legend>
       <p>Organization Type <select id="orgType" name="type" onchange="changeName()"></select></p>
       <p id="ifPhysician"><span id="change">Organization Name</span> <input id="orgName" name="name" type="text"> <em  id="changeToo"style="color: #9932CC;">*can be partial - "vol" for "Volunteer"</em></p>
-      <p>State <select name="state" id="state" onchange="getCities(this.value)">
+      <p>State <select name="state" id="state" onchange="countyCity(this.value)">
         <option value="">
           All States
         </option>
@@ -80,7 +80,7 @@
         <option value="WV">WV</option>
         <option value="WY">WY</option>
       </select> <span id="orgCitySearch"></span></p>
-      <p>County <input id="county" name="county" type="text"></p>
+      <p>County <span id="orgCountySearch"></span><!--<input id="county" name="county" type="text">--></p>
       <p>ZIP Code <input id="zip" name="zip" type="text"></p>
       <div style="margin:0 0 0 210px">
         <input value="Show Results" onclick="checkSearch()" id="btnSearch" class="button" type="button">
